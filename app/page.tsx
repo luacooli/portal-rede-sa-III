@@ -1,42 +1,41 @@
-import { allPosts } from 'contentlayer/generated'
-
+import { fetchAllPosts } from '@/lib/strapiApi'
 import CityNavbar from '@/components/CityNavbar'
 import PostCard from '@/components/PostCard'
-import WeatherWidget from '@/components/WeatherWidget'
 
-export default function HomePage() {
-  const sortedPosts = allPosts.sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+export default async function HomePage() {
+  const posts = await fetchAllPosts()
+
+  // Ordena do mais recente para o mais antigo
+  const sortedPosts = posts.sort(
+    (a: any, b: any) =>
+      new Date(b.attributes.publishedAt).getTime() - new Date(a.attributes.publishedAt).getTime()
   )
 
   return (
-    <main className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-8">
-      {/* Sidebar - Clima (geral) */}
-      <aside className="lg:col-span-1 mb-8 lg:mb-0">
-        <WeatherWidget />
-      </aside>
-
-      {/* Conteúdo Principal */}
-      <section className="lg:col-span-3">
-        {/* Navbar das cidades */}
+    <main className="max-w-7xl mx-auto px-4 py-8">
+      <div className="mb-8">
         <CityNavbar />
+      </div>
 
-        {/* Logo centralizada */}
-        <div className="flex justify-center my-6">
-          <img
-            src="/images/logo/REDESA.png"
-            alt="Mapa das 13 cidades"
-            className="w-full max-w-sm md:max-w-md lg:max-w-lg"
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {sortedPosts.map((post: any) => (
+          <PostCard
+            key={post.id}
+            post={{
+              _id: post.id,
+              slug: post.attributes.slug,
+              title: post.attributes.title,
+              date: post.attributes.publishedAt,
+              summary: post.attributes.summary,
+              image: post.attributes.image?.data?.attributes?.url || '',
+              citySlug: post.attributes.city,
+              topicSlug: post.attributes.topic,
+              topic: post.attributes.topic
+            }}
+            showImg={false} // Na Home sem imagens nos cards
           />
-        </div>
-
-        {/* Lista de matérias */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sortedPosts.map(post => (
-            <PostCard key={post._id} post={post} showImg={false} />
-          ))}
-        </section>
-      </section>
+        ))}
+      </div>
     </main>
   )
 }

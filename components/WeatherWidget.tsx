@@ -115,7 +115,7 @@ export default function WeatherWidget({ city }: { city?: string }) {
   return (
     <div
       onClick={handleNextCity}
-      className="cursor-pointer rounded-xl shadow-sm p-4 space-y-3 border transition-all duration-300 hover:shadow-md hover:scale-[1.01]"
+      className="cursor-pointer rounded-xl shadow-sm p-4 space-y-3 border transition-all duration-300 hover:shadow-md hover:scale-[1.01des]"
       style={{
         backgroundColor: colors.neutralLight,
         borderColor: colors.primary

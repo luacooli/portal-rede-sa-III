@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { format } from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
+import { colors } from '@/lib/constants/colors'
 
 type Post = {
   _id: string
@@ -33,7 +34,7 @@ export default function PostCard({
         <article className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100">
           {post.image && showImg && (
             <img
-              src={post.image}
+              src={post.image.startsWith('http') ? post.image : `${process.env.NEXT_PUBLIC_STRAPI_URL}${post.image}`}
               alt={post.title}
               className="w-full h-48 object-cover"
             />
@@ -46,9 +47,14 @@ export default function PostCard({
 
             <p className="text-sm text-gray-500">{formattedDate}</p>
 
-            {/* Badge de tópico (só se showTopicBadge for true) */}
             {showTopicBadge && post.topic && (
-              <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+              <span
+                className="inline-block text-xs font-medium px-2 py-1 rounded"
+                style={{
+                  backgroundColor: colors.highlight,
+                  color: '#fff'
+                }}
+              >
                 {post.topic.toUpperCase()}
               </span>
             )}
